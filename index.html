@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Làm Chủ AI  — Tạo Video Bằng Một Câu Lệnh</title>
+<title>VidCraft AI — Tạo Video Bằng Một Câu Lệnh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -99,13 +99,13 @@
 
   /* Templates */
   .tpl-scroll{
-    display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;
+    display:flex;gap:18px;overflow-x:auto;padding-bottom:10px;
     scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
   }
   .tpl-scroll::-webkit-scrollbar{height:6px;}
   .tpl-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;}
   .tpl-card{
-    flex:0 0 210px;scroll-snap-align:start;
+    flex:0 0 260px;scroll-snap-align:start;
     border:1px solid var(--line);border-radius:var(--radius);
     background:var(--surface);overflow:hidden;
   }
@@ -114,13 +114,19 @@
     background:var(--surface-2);overflow:hidden;
   }
   .tpl-embed iframe{width:100%;height:100%;border:0;display:block;}
+  .tpl-embed::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%);
+  }
+  .tpl-badge{
+    position:absolute;top:14px;left:14px;z-index:2;pointer-events:none;
+    background:rgba(0,0,0,0.5);color:#FFFFFF;font-size:11px;font-weight:700;
+    letter-spacing:0.03em;text-transform:uppercase;padding:6px 12px;border-radius:999px;
+  }
   .tpl-placeholder{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     text-align:center;padding:16px;color:var(--muted);font-size:12.5px;
   }
-  .tpl-info{padding:14px 16px;}
-  .tpl-info span{font-size:14px;font-weight:600;display:block;}
-  .tpl-info small{color:var(--muted);font-size:12px;margin-top:2px;display:block;}
 
   /* Premium single-plan showcase */
   .premium-showcase{
@@ -184,7 +190,7 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <div class="eyebrow">Tự động hóa sáng tạo – Bứt tốc nội dung</div>
+      <div class="eyebrow">Xây kênh thần tốc - tạo mốc thương hiệu</div>
       <h1>Biến ý tưởng thành video chỉ với một câu lệnh</h1>
       <p class="lede">Nhập ý tưởng, để AI tự chia cảnh, dựng chuyển động, đọc lời thoại, ghép nhạc nền và xuất file MP4 sẵn sàng đăng — không cần biết dựng phim hay lập trình.</p>
       <div class="hero-actions">
@@ -221,7 +227,7 @@
 </section>
 
 <section id="templates">
-  <!-- Dán link video YouTube hoặc TikTok bình thường (link chia sẻ, không cần link nhúng)
+  <!-- Dán link YouTube bình thường (link chia sẻ hoặc link Shorts, không cần link nhúng)
        vào thuộc tính data-url="" của từng thẻ .tpl-embed bên dưới. -->
   <div class="wrap">
     <div class="section-head">
@@ -230,23 +236,19 @@
     </div>
     <div class="tpl-scroll">
       <div class="tpl-card">
-  <div class="tpl-embed" data-url="https://www.youtube.com/shorts/ing2AjGPm3U"><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
-  <div class="tpl-info"><span>Video về Tay</span></div></div>
-      <div class="tpl-card">
-        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
-        <div class="tpl-info"><span>Sáng tạo AI</span><small>Phong cách tự do</small></div>
+        <div class="tpl-embed" data-url="https://www.youtube.com/shorts/ing2AjGPm3U"><span class="tpl-badge">Video về Tay</span><div class="tpl-placeholder">Dán link YouTube</div></div>
       </div>
       <div class="tpl-card">
-        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
-        <div class="tpl-info"><span>Đời sống</span><small>Chia sẻ, tâm sự</small></div>
+        <div class="tpl-embed" data-url=""><span class="tpl-badge">Sáng tạo AI</span><div class="tpl-placeholder">Dán link YouTube</div></div>
       </div>
       <div class="tpl-card">
-        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
-        <div class="tpl-info"><span>Giải trí</span><small>Tin tức, ngôi sao</small></div>
+        <div class="tpl-embed" data-url=""><span class="tpl-badge">Đời sống</span><div class="tpl-placeholder">Dán link YouTube</div></div>
       </div>
       <div class="tpl-card">
-        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
-        <div class="tpl-info"><span>Du lịch</span><small>Khám phá, review</small></div>
+        <div class="tpl-embed" data-url=""><span class="tpl-badge">Giải trí</span><div class="tpl-placeholder">Dán link YouTube</div></div>
+      </div>
+      <div class="tpl-card">
+        <div class="tpl-embed" data-url=""><span class="tpl-badge">Du lịch</span><div class="tpl-placeholder">Dán link YouTube</div></div>
       </div>
     </div>
   </div>
@@ -331,7 +333,7 @@
 
 <footer>
   <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;width:100%;">
-    <span>Làm Chủ AI — nơi ý tưởng trở thành video.</span>
+    <span>VidCraft AI — nơi ý tưởng trở thành video.</span>
     <span>Bản dựng lại giao diện tham khảo, không kèm đăng nhập hay thanh toán.</span>
   </div>
 </footer>
@@ -345,13 +347,11 @@
     });
   });
 
-  // Nhận link YouTube/TikTok bình thường (link chia sẻ) và dựng khung nhúng phù hợp
+  // Nhận link YouTube bình thường (link chia sẻ hoặc Shorts) và dựng khung nhúng
   function buildEmbedUrl(rawUrl){
     var url = rawUrl.trim();
     var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{6,})/);
     if(yt){ return 'https://www.youtube.com/embed/' + yt[1]; }
-    var tt = url.match(/tiktok\.com\/[^/]+\/video\/(\d+)/);
-    if(tt){ return 'https://www.tiktok.com/embed/v2/' + tt[1]; }
     return null;
   }
   document.querySelectorAll('.tpl-embed').forEach(function(box){
@@ -359,13 +359,14 @@
     if(!rawUrl.trim()) return;
     var embedUrl = buildEmbedUrl(rawUrl);
     if(!embedUrl) return;
-    box.innerHTML = '';
+    var placeholder = box.querySelector('.tpl-placeholder');
+    if(placeholder){ placeholder.remove(); }
     var iframe = document.createElement('iframe');
     iframe.src = embedUrl;
     iframe.loading = 'lazy';
     iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
     iframe.allowFullscreen = true;
-    box.appendChild(iframe);
+    box.insertBefore(iframe, box.firstChild);
   });
 </script>
 
