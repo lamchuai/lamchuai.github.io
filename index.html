@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Làm Chủ AI — Tạo Video Bằng Một Câu Lệnh</title>
+<title>VidCraft AI — Tạo Video Bằng Một Câu Lệnh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -105,7 +105,7 @@
   .tpl-scroll::-webkit-scrollbar{height:6px;}
   .tpl-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;}
   .tpl-card{
-    flex:0 0 260px;scroll-snap-align:start;
+    flex:0 0 320px;scroll-snap-align:start;
     border:1px solid var(--line);border-radius:var(--radius);
     background:var(--surface);overflow:hidden;
   }
@@ -132,6 +132,11 @@
     display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:16px;
     box-shadow:0 10px 24px -8px rgba(255,90,20,0.5);
   }
+  .tpl-thumb{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .tpl-thumb .tpl-play{position:relative;z-index:1;}
 
   /* Premium single-plan showcase */
   .premium-showcase{
@@ -187,7 +192,7 @@
 
 <header>
   <div class="nav wrap">
-    <div class="brand"><span class="brand-mark"></span>Làm Chủ AI</div>
+    <div class="brand"><span class="brand-mark"></span>VidCraft AI</div>
     <a class="nav-cta" href="#contact">Liên hệ tư vấn</a>
   </div>
 </header>
@@ -244,7 +249,7 @@
         <div class="tpl-embed" data-url="https://www.youtube.com/shorts/ing2AjGPm3U"><span class="tpl-badge">Video về Tay</span><div class="tpl-placeholder"><span class="tpl-play">▶</span>Dán link YouTube</div></div>
       </div>
       <div class="tpl-card">
-        <div class="tpl-embed" data-url="https://www.youtube.com/shorts/H1qfZ4Gg6qk"><span class="tpl-badge">Video So Sánh</span><div class="tpl-placeholder"><span class="tpl-play">▶</span>Dán link YouTube</div></div>
+        <div class="tpl-embed" data-url=""><span class="tpl-badge">Sáng tạo AI</span><div class="tpl-placeholder"><span class="tpl-play">▶</span>Dán link YouTube</div></div>
       </div>
       <div class="tpl-card">
         <div class="tpl-embed" data-url=""><span class="tpl-badge">Đời sống</span><div class="tpl-placeholder"><span class="tpl-play">▶</span>Dán link YouTube</div></div>
@@ -314,7 +319,7 @@
     <div class="faq-list">
       <div class="faq-item">
         <div class="faq-q">Tôi không biết lập trình hay dựng video, có dùng được không?<span class="mark">+</span></div>
-        <div class="faq-a">Được. Bạn chỉ cần một AI agent như Claude, ChatGPT, Gemini . Phần kỹ thuật đã được đóng gói sẵn trong công cụ.</div>
+        <div class="faq-a">Được. Bạn chỉ cần một AI agent như Claude, ChatGPT, Gemini hoặc Cursor. Phần kỹ thuật đã được đóng gói sẵn trong công cụ.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Vì sao chỉ có một gói Premium?<span class="mark">+</span></div>
@@ -338,7 +343,8 @@
 
 <footer>
   <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;width:100%;">
-    <span>Làm Chủ AI — nơi ý tưởng trở thành video.</span>
+    <span>VidCraft AI — nơi ý tưởng trở thành video.</span>
+    <span>Bản dựng lại giao diện tham khảo, không kèm đăng nhập hay thanh toán.</span>
   </div>
 </footer>
 
@@ -351,26 +357,37 @@
     });
   });
 
-  // Nhận link YouTube bình thường (link chia sẻ hoặc Shorts) và dựng khung nhúng
-  function buildEmbedUrl(rawUrl){
+  // Nhận link YouTube bình thường (link chia sẻ hoặc Shorts), hiện ảnh bìa + nút play cam riêng,
+  // chỉ tải video thật khi người xem bấm vào (tránh nút play đỏ mặc định của YouTube)
+  function extractYouTubeId(rawUrl){
     var url = rawUrl.trim();
     var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{6,})/);
-    if(yt){ return 'https://www.youtube.com/embed/' + yt[1]; }
-    return null;
+    return yt ? yt[1] : null;
   }
   document.querySelectorAll('.tpl-embed').forEach(function(box){
     var rawUrl = box.getAttribute('data-url') || '';
     if(!rawUrl.trim()) return;
-    var embedUrl = buildEmbedUrl(rawUrl);
-    if(!embedUrl) return;
+    var videoId = extractYouTubeId(rawUrl);
+    if(!videoId) return;
     var placeholder = box.querySelector('.tpl-placeholder');
     if(placeholder){ placeholder.remove(); }
-    var iframe = document.createElement('iframe');
-    iframe.src = embedUrl;
-    iframe.loading = 'lazy';
-    iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-    iframe.allowFullscreen = true;
-    box.insertBefore(iframe, box.firstChild);
+
+    var thumb = document.createElement('div');
+    thumb.className = 'tpl-thumb';
+    thumb.style.backgroundImage = "url('https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg')";
+    var playBtn = document.createElement('span');
+    playBtn.className = 'tpl-play';
+    playBtn.textContent = '▶';
+    thumb.appendChild(playBtn);
+    thumb.addEventListener('click', function(){
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+      iframe.loading = 'lazy';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      box.replaceChild(iframe, thumb);
+    });
+    box.insertBefore(thumb, box.firstChild);
   });
 </script>
 
