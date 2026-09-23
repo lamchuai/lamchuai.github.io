@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VidCraft AI — Tạo Video Bằng Một Câu Lệnh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1120;
+    --surface:#141D33;
+    --surface-2:#1C2740;
+    --line:#2C3A5A;
+    --gold:#FDB022;
+    --accent:#FF7A1A;
+    --accent-2:#FF4B2E;
+    --forest:#FF7A1A;
+    --forest-2:#FF4B2E;
+    --text:#F4F6FA;
+    --muted:#93A0BE;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+  img,svg{display:block;max-width:100%;}
+
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,17,32,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:20px;font-weight:600;}
+  .brand-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--gold));}
+  .nav-links{display:flex;gap:28px;font-size:14.5px;color:var(--muted);}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{padding:9px 18px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#FFFFFF;font-size:14px;font-weight:700;}
+  .nav-cta:hover{opacity:0.92;}
+
+  /* Hero */
+  .hero{padding:56px 0 72px;}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+  .eyebrow{
+    display:inline-block;color:var(--gold);font-size:13.5px;font-weight:600;
+    border:1px solid var(--line);border-radius:999px;padding:8px 18px;margin-bottom:26px;
+  }
+  .hero h1{font-size:42px;line-height:1.12;}
+  .hero p.lede{color:var(--muted);font-size:16px;max-width:48ch;margin:22px 0 30px;}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#FFFFFF;padding:13px 24px;border-radius:10px;font-weight:700;font-size:15px;box-shadow:0 12px 28px -12px rgba(255,90,20,0.55);}
+  .btn-primary:hover{opacity:0.92;}
+  .btn-ghost{padding:13px 22px;border-radius:10px;border:1px solid var(--line);font-size:15px;color:var(--text);}
+  .btn-ghost:hover{border-color:var(--gold);}
+
+  .frame-single{
+    width:100%;aspect-ratio:16/9;
+    border-radius:18px;border:1px solid var(--line);
+    background:linear-gradient(160deg,var(--surface-2),var(--surface));
+    box-shadow:0 30px 60px -30px rgba(0,0,0,0.4);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .frame-play{
+    width:56px;height:56px;border-radius:50%;background:#FFFFFF;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);font-size:18px;box-shadow:0 10px 24px -8px rgba(0,0,0,0.3);
+  }
+  .frame-caption-center{color:var(--muted);font-size:13px;margin-top:14px;text-align:right;}
+
+  section{padding:72px 0;}
+  .section-head{max-width:640px;margin-bottom:44px;}
+  .section-head h2{font-size:32px;}
+  .section-head p{color:var(--muted);margin-top:14px;font-size:15.5px;}
+
+  /* Pipeline */
+  .pipeline{display:flex;overflow-x:auto;gap:0;padding-bottom:8px;}
+  .step{flex:0 0 200px;padding:20px 22px 22px 0;position:relative;}
+  .step-num{font-family:'Fraunces',serif;font-size:26px;color:var(--gold);}
+  .step h3{font-size:15px;margin-top:10px;}
+  .step p{color:var(--muted);font-size:13.5px;margin-top:6px;}
+
+  /* Templates */
+  .tpl-scroll{
+    display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  }
+  .tpl-scroll::-webkit-scrollbar{height:6px;}
+  .tpl-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;}
+  .tpl-card{
+    flex:0 0 210px;scroll-snap-align:start;
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--surface);overflow:hidden;
+  }
+  .tpl-embed{
+    width:100%;aspect-ratio:9/16;position:relative;
+    background:var(--surface-2);overflow:hidden;
+  }
+  .tpl-embed iframe{width:100%;height:100%;border:0;display:block;}
+  .tpl-placeholder{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:16px;color:var(--muted);font-size:12.5px;
+  }
+  .tpl-info{padding:14px 16px;}
+  .tpl-info span{font-size:14px;font-weight:600;display:block;}
+  .tpl-info small{color:var(--muted);font-size:12px;margin-top:2px;display:block;}
+
+  /* Premium single-plan showcase */
+  .premium-showcase{
+    display:grid;grid-template-columns:0.85fr 1.15fr;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    border-radius:var(--radius);overflow:hidden;
+  }
+  .premium-main{
+    padding:44px 38px;background:rgba(0,0,0,0.16);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .premium-main .plan-tag{color:rgba(255,255,255,0.85);}
+  .premium-main .plan-name{color:#FFFFFF;}
+  .premium-main .plan-note{color:rgba(255,255,255,0.9);}
+  .premium-main .plan-price{color:#FFFFFF;}
+  .premium-main .plan-price small{color:rgba(255,255,255,0.85);}
+  .premium-cta{
+    display:inline-block;margin-top:24px;background:#FFFFFF;color:var(--accent-2);
+    padding:13px 24px;border-radius:10px;font-weight:700;font-size:15px;text-align:center;
+  }
+  .premium-cta:hover{opacity:0.92;}
+  .premium-features{padding:44px 40px;}
+  .premium-features ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;}
+  .premium-features li{font-size:14px;color:#FFFFFF;padding-left:18px;position:relative;line-height:1.45;}
+  .premium-features li::before{content:"●";font-size:9px;position:absolute;left:0;top:5px;color:rgba(255,255,255,0.85);}
+
+  /* Contact strip instead of login/checkout */
+  .contact-strip{display:flex;gap:16px;flex-wrap:wrap;}
+  .contact-chip{border:1px solid var(--line);border-radius:10px;padding:12px 18px;font-size:14px;color:var(--muted);}
+  .contact-chip:hover{border-color:var(--gold);color:var(--text);}
+
+
+  /* FAQ */
+  .faq-item{border-bottom:1px solid var(--line);padding:20px 0;}
+  .faq-q{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:15.5px;font-weight:500;}
+  .faq-q .mark{color:var(--accent);font-family:'Fraunces',serif;font-size:20px;transition:transform .2s;}
+  .faq-item.open .mark{transform:rotate(45deg);}
+  .faq-a{max-height:0;overflow:hidden;color:var(--muted);font-size:14.5px;transition:max-height .25s ease;}
+  .faq-item.open .faq-a{max-height:200px;padding-top:12px;}
+
+  footer{padding:44px 0;color:var(--muted);font-size:13.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @media(max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:34px;max-width:none;}
+    .premium-showcase{grid-template-columns:1fr;}
+    .premium-features ul{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <div class="brand"><span class="brand-mark"></span>VidCraft AI</div>
+    <a class="nav-cta" href="#contact">Liên hệ tư vấn</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Xây kênh thần tốc - tạo mốc thương hiệu</div>
+      <h1>Biến ý tưởng thành video chỉ với một câu lệnh</h1>
+      <p class="lede">Nhập ý tưởng, để AI tự chia cảnh, dựng chuyển động, đọc lời thoại, ghép nhạc nền và xuất file MP4 sẵn sàng đăng — không cần biết dựng phim hay lập trình.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#pricing">Chọn công cụ</a>
+        <a class="btn-ghost" href="#pipeline">Video thực tế</a>
+      </div>
+    </div>
+    <div>
+      <div class="frame-single">
+        <div class="frame-play">▶</div>
+      </div>
+      <div class="frame-caption-center">Video demo</div>
+    </div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Một quy trình, tám bước tự động</h2>
+      <p>Toàn bộ pipeline chạy qua AI agent bạn đã có sẵn (Claude, ChatGPT, Gemini, Cursor...), không cần cài thêm phần mềm dựng video.</p>
+    </div>
+    <div class="pipeline">
+      <div class="step"><div class="step-num">01</div><h3>Nhận ý tưởng</h3><p>Bạn nhập chủ đề hoặc nội dung gốc bằng một câu lệnh.</p></div>
+      <div class="step"><div class="step-num">02</div><h3>Viết kịch bản</h3><p>AI chia nội dung thành các cảnh và nhịp kể chuyện.</p></div>
+      <div class="step"><div class="step-num">03</div><h3>Dựng giọng đọc</h3><p>Chuyển kịch bản thành giọng nói AI tự nhiên.</p></div>
+      <div class="step"><div class="step-num">04</div><h3>Tạo phụ đề</h3><p>Phụ đề được tách tự động từ giọng đọc, khớp từng câu.</p></div>
+      <div class="step"><div class="step-num">05</div><h3>Dựng chuyển động</h3><p>Hoạt ảnh và chuyển cảnh được đồng bộ theo lời thoại.</p></div>
+      <div class="step"><div class="step-num">06</div><h3>Ghép nhạc nền</h3><p>Thêm nhạc nền phù hợp với tông của nội dung.</p></div>
+      <div class="step"><div class="step-num">07</div><h3>Áp template</h3><p>Chọn phong cách có sẵn hoặc phong cách do AI sáng tạo.</p></div>
+      <div class="step"><div class="step-num">08</div><h3>Xuất MP4</h3><p>Render video dọc hoặc ngang, sẵn sàng đăng ngay.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="templates">
+  <!-- Dán link video YouTube hoặc TikTok bình thường (link chia sẻ, không cần link nhúng)
+       vào thuộc tính data-url="" của từng thẻ .tpl-embed bên dưới. -->
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Thư viện phong cách cho mọi lĩnh vực</h2>
+      <p>Vuốt ngang để xem các mẫu — dùng có sẵn hoặc yêu cầu AI dựng phong cách riêng cho thương hiệu của bạn.</p>
+    </div>
+    <div class="tpl-scroll">
+      <div class="tpl-card">
+        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
+        <div class="tpl-info"><span>Nhà đất</span><small>Kiến trúc, dự án</small></div>
+      </div>
+      <div class="tpl-card">
+        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
+        <div class="tpl-info"><span>Sáng tạo AI</span><small>Phong cách tự do</small></div>
+      </div>
+      <div class="tpl-card">
+        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
+        <div class="tpl-info"><span>Đời sống</span><small>Chia sẻ, tâm sự</small></div>
+      </div>
+      <div class="tpl-card">
+        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
+        <div class="tpl-info"><span>Giải trí</span><small>Tin tức, ngôi sao</small></div>
+      </div>
+      <div class="tpl-card">
+        <div class="tpl-embed" data-url=""><div class="tpl-placeholder">Dán link YouTube hoặc TikTok</div></div>
+        <div class="tpl-info"><span>Du lịch</span><small>Khám phá, review</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Một công cụ duy nhất, đầy đủ tính năng</h2>
+      <p>Không chia nhiều mức — Premium gồm toàn bộ pipeline, thư viện phong cách và cập nhật lâu dài.</p>
+    </div>
+    <div class="premium-showcase">
+      <div class="premium-main">
+        <div class="plan-tag">Gói duy nhất</div>
+        <div class="plan-name" style="font-size:30px;">Premium</div>
+        <div class="plan-note" style="min-height:auto;margin-top:10px;font-size:15px;">Chế độ chuyên nghiệp cho cá nhân và doanh nghiệp muốn làm nội dung video dài hạn, đa phong cách.</div>
+        <div class="plan-price" style="margin-top:26px;">Trọn đời</div>
+        <a class="premium-cta" href="#contact">Liên hệ nhận gói Premium</a>
+      </div>
+      <div class="premium-features">
+        <ul>
+          <li>AI tự lên kịch bản, chia cảnh và dựng chuyển động</li>
+          <li>Giọng nói AI tự nhiên, nhiều lựa chọn giọng</li>
+          <li>Phụ đề tự động, khớp chính xác từng câu thoại</li>
+          <li>Pipeline tự động đủ 8 bước, xuất MP4 chất lượng cao</li>
+          <li>Thư viện 30+ phong cách có sẵn, đủ mọi lĩnh vực</li>
+          <li>Tự tạo phong cách riêng theo thương hiệu của bạn</li>
+          <li>Tự động thêm và cập nhật nhạc nền mới</li>
+          <li>Cập nhật phiên bản và mẫu mới liên tục</li>
+          <li>Chạy qua AI agent bất kỳ — Claude, ChatGPT, Gemini, Cursor...</li>
+          <li>Không cần biết dựng video hay lập trình</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Cần tư vấn trước khi chọn gói?</h2>
+      <p>Không có bước đăng nhập hay thanh toán trên trang — mọi trao đổi và bàn giao công cụ đều qua liên hệ trực tiếp.</p>
+    </div>
+    <div class="contact-strip">
+      <a class="contact-chip" href="mailto:hello@example.com">Email tư vấn</a>
+      <a class="contact-chip" href="#">Fanpage Facebook</a>
+      <a class="contact-chip" href="#">Kênh TikTok</a>
+      <a class="contact-chip" href="#">Zalo hỗ trợ</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Câu hỏi thường gặp</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Tôi không biết lập trình hay dựng video, có dùng được không?<span class="mark">+</span></div>
+        <div class="faq-a">Được. Bạn chỉ cần một AI agent như Claude, ChatGPT, Gemini hoặc Cursor. Phần kỹ thuật đã được đóng gói sẵn trong công cụ.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Vì sao chỉ có một gói Premium?<span class="mark">+</span></div>
+        <div class="faq-a">Để bạn không phải cân nhắc nhiều lựa chọn — Premium đã gồm đủ pipeline tự động, giọng nói AI, phụ đề, thư viện phong cách và các bản cập nhật lâu dài.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Một ngày tạo được bao nhiêu video?<span class="mark">+</span></div>
+        <div class="faq-a">Với AI agent bản trả phí, khoảng 10–20 video mỗi ngày. Với bản miễn phí, khoảng 2–3 video mỗi ngày, tùy giới hạn của agent bạn dùng.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Cấu hình máy tối thiểu là gì?<span class="mark">+</span></div>
+        <div class="faq-a">CPU 2 nhân, RAM 8GB, còn trống khoảng 2GB ổ cứng. Máy càng khỏe thì thời gian render càng nhanh.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Chất lượng AI agent có ảnh hưởng đến video không?<span class="mark">+</span></div>
+        <div class="faq-a">Có. Agent càng thông minh (như Claude hay ChatGPT bản cao) thường cho kết quả tốt hơn, nhưng ở gói Premium, phần khung template đã hỗ trợ sẵn nên agent phổ thông vẫn ra kết quả ổn.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;width:100%;">
+    <span>VidCraft AI — nơi ý tưởng trở thành video.</span>
+    <span>Bản dựng lại giao diện tham khảo, không kèm đăng nhập hay thanh toán.</span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-q').addEventListener('click', function(){
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(o){ if(o!==item) o.classList.remove('open'); });
+      item.classList.toggle('open', !isOpen);
+    });
+  });
+
+  // Nhận link YouTube/TikTok bình thường (link chia sẻ) và dựng khung nhúng phù hợp
+  function buildEmbedUrl(rawUrl){
+    var url = rawUrl.trim();
+    var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{6,})/);
+    if(yt){ return 'https://www.youtube.com/embed/' + yt[1]; }
+    var tt = url.match(/tiktok\.com\/[^/]+\/video\/(\d+)/);
+    if(tt){ return 'https://www.tiktok.com/embed/v2/' + tt[1]; }
+    return null;
+  }
+  document.querySelectorAll('.tpl-embed').forEach(function(box){
+    var rawUrl = box.getAttribute('data-url') || '';
+    if(!rawUrl.trim()) return;
+    var embedUrl = buildEmbedUrl(rawUrl);
+    if(!embedUrl) return;
+    box.innerHTML = '';
+    var iframe = document.createElement('iframe');
+    iframe.src = embedUrl;
+    iframe.loading = 'lazy';
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    iframe.allowFullscreen = true;
+    box.appendChild(iframe);
+  });
+</script>
+
+</body>
+</html>
